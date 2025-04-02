@@ -1,56 +1,56 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import Modal from "./Modal.jsx";
-import ProductForm from "./ProductForm.jsx";
-import Search from "./Search.jsx";
 
-export default function NavBar() {
-  const [addProduct, setAddProduct] = useState(false);
+import { useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { CartContext } from '../App';
 
-  const openAddProduct = () => {
-    setAddProduct(true);
-  };
-
-  const closeAddProduct = () => {
-    setAddProduct(false);
-  };
-
+const Navbar = () => {
+  const { cart } = useContext(CartContext);
+  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0); 
+  
   return (
-    <nav className="w-full bg-indigo-600 text-white shadow-md">
-      <div className="container mx-auto flex flex-col lg:flex-row items-center justify-between px-5 py-2">
-        {/* Logo/Home Link */}
-        <Link
-          to="/"
-          className="text-2xl font-extrabold tracking-wide text-indigo-100 hover:text-indigo-300 transition duration-300 mb-4 lg:mb-0"
-        >
+    <nav className="navbar navbar-expand-lg navbar-dark navbar-purple">
+      <div className="container">
+        <Link className="navbar-brand fw-bold" to="/">
           ShopEase
         </Link>
-
-        <Search />
-
-        {/* Navigation Links */}
-        <div className="flex flex-col lg:flex-row items-center">
-          <button
-            onClick={openAddProduct}
-            className="px-4 py-2 my-2 mx-2 bg-indigo-700 rounded-lg hover:bg-indigo-500 hover:text-white transition duration-300"
-          >
-            Add Product
-          </button>
-          <Modal isOpen={addProduct} closeModal={closeAddProduct}>
-            <ProductForm
-              closeModal={closeAddProduct}
-              titleHtml={"Create a New Product"}
-              buttonHtml={"Add Product"}
-            />
-          </Modal>
-          <Link
-            to="/favourites"
-            className="px-4 py-2 bg-indigo-700 rounded-lg hover:bg-indigo-500 hover:text-white transition duration-300"
-          >
-            Favourites
-          </Link>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-auto">
+            <li className="nav-item">
+              <Link className="nav-link" to="/">
+                Home
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/products">
+                Products
+              </Link>
+            </li>
+          </ul>
+          <div className="d-flex">
+            <Link to="/cart" className="btn btn-outline-light position-relative me-2">
+              <i className="bi bi-cart"></i> Cart
+              {cartItemCount > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-purple-light">
+                  {cartItemCount}
+                </span>
+              )}
+            </Link>
+            <Link to="/admin/login" className="btn btn-outline-light">
+              Admin
+            </Link>
+          </div>
         </div>
       </div>
     </nav>
   );
-}
+};
+
+export default Navbar;
