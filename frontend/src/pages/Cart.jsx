@@ -87,12 +87,6 @@ const Cart = () => {
                       <div className="col-md-2 text-end">
                         <div className="d-flex justify-content-between align-items-center">
                           <span className="fw-bold">${(item.price * item.quantity).toFixed(2)}</span>
-                          <button 
-                            className="btn btn-sm text-danger"
-                            onClick={() => removeFromCart(item.id)}
-                          >
-                            <i className="bi bi-trash"></i>
-                          </button>
                         </div>
                       </div>
                     </div>

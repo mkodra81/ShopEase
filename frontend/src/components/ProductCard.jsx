@@ -29,7 +29,7 @@ const ProductCard = ({ product }) => {
             </Link>
             <button 
               className="btn btn-purple flex-grow-1"
-              onClick={() => addToCart(product)}
+              onClick={() => addToCart(product, 1)}
             >
               Add to Cart
             </button>
