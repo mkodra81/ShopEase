@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import AdminNavbar from "../../components/AdminNavbar";
 import { useProductStore } from "../../data/products.js";
+import { useSearchParams } from "react-router-dom";
 
 const Products = () => {
   const products = useProductStore((state) => state.products);
@@ -9,9 +10,11 @@ const Products = () => {
   const updateProduct = useProductStore((state) => state.updateProduct);
   const deleteProduct = useProductStore((state) => state.deleteProduct);
 
+  const [searchParams] = useSearchParams();
+  const productIdParam = searchParams.get("_id");
 
-  const [productList, setProductList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [productList, setProductList] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [currentProduct, setCurrentProduct] = useState({
     name: "",
@@ -23,14 +26,14 @@ const Products = () => {
     featured: false,
   });
 
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL 
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const fetchProducts = async () => {
       await fetchAllProducts();
     };
     fetchProducts();
-  }, [fetchAllProducts, products]);
+  }, [fetchAllProducts, products && searchParams.length <= 0]);
 
   useEffect(() => {
     setProductList(products);
@@ -43,16 +46,24 @@ const Products = () => {
     }
   };
 
+  useEffect(() => {
+    if (productIdParam) {
+      const product = products.find((p) => p._id === productIdParam);
+      if (product) {
+        setCurrentProduct({ ...product });
+        setShowForm(true);
+      }
+    }
+  }, [productIdParam, products]);
+
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
 
     if (e.target.value === "") {
       setProductList(products);
     } else {
-      const filtered = products.filter(
-        (product) =>
-          product.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          product.category.toLowerCase().includes(e.target.value.toLowerCase())
+      const filtered = products.filter((product) =>
+        product.name.toLowerCase().includes(e.target.value.toLowerCase())
       );
       setProductList(filtered);
     }
@@ -137,7 +148,7 @@ const Products = () => {
   };
 
   const handleEdit = (product) => {
-    setCurrentProduct({ ...product, image: null }); 
+    setCurrentProduct({ ...product, image: null });
     setShowForm(true);
   };
 
@@ -306,7 +317,7 @@ const Products = () => {
                   <input
                     type="text"
                     className="form-control"
-                    placeholder="Search products by name or category..."
+                    placeholder="Search products by name..."
                     value={searchTerm}
                     onChange={handleSearch}
                   />
@@ -396,4 +407,4 @@ const Products = () => {
   );
 };
 
-export default Products;  
+export default Products;

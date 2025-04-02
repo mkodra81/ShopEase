@@ -44,7 +44,7 @@ const Cart = () => {
               </div>
               <div className="card-body p-0">
                 {cart.map((item) => (
-                  <div key={item.id} className="p-3 border-bottom">
+                  <div key={item._id} className="p-3 border-bottom">
                     <div className="row align-items-center">
                       <div className="col-md-2 mb-2 mb-md-0">
                         <img 
@@ -65,7 +65,7 @@ const Cart = () => {
                           <button 
                             className="btn btn-outline-secondary" 
                             type="button"
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() => updateQuantity(item._id, item.quantity - 1)}
                           >
                             -
                           </button>
@@ -78,7 +78,7 @@ const Cart = () => {
                           <button 
                             className="btn btn-outline-secondary" 
                             type="button"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() => updateQuantity(item._id, item.quantity + 1)}
                           >
                             +
                           </button>

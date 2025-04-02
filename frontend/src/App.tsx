@@ -41,14 +41,15 @@ const App = () => {
     setCart(cart.filter((item) => item.id !== productId));
   };
 
-  const updateQuantity = (productId, quantity) => {
+  const updateQuantity = (productId : string, quantity : number) => {
+    console.log(quantity)
     if (quantity <= 0) {
       removeFromCart(productId);
       return;
     }
 
     setCart(
-      cart.map((item) => (item.id === productId ? { ...item, quantity } : item))
+      cart.map((item) => (item._id === productId ? { ...item, quantity } : item))
     );
   };
 
