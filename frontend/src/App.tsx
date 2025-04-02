@@ -1,6 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, createContext } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Customer Pages
 import Home from "./pages/Home";
@@ -22,7 +21,7 @@ const App = () => {
   const [cart, setCart] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const addToCart = (product) => {
+  const addToCart = (product : any) => {
     const existingProduct = cart.find((item) => item.id === product.id);
 
     if (existingProduct) {
