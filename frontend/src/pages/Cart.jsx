@@ -8,6 +8,8 @@ import { CartContext } from '../App';
 const Cart = () => {
   const navigate = useNavigate();
   const { cart, removeFromCart, updateQuantity, cartTotal } = useContext(CartContext);
+
+  const BACKEND_URL = 'http://localhost:5000';
   
   if (cart.length === 0) {
     return (
@@ -46,7 +48,7 @@ const Cart = () => {
                     <div className="row align-items-center">
                       <div className="col-md-2 mb-2 mb-md-0">
                         <img 
-                          src={item.image} 
+                          src={`${BACKEND_URL}/${item.image}`} 
                           alt={item.name} 
                           className="img-fluid rounded"
                         />

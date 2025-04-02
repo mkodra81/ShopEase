@@ -22,12 +22,12 @@ const App = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const addToCart = (product : any) => {
-    const existingProduct = cart.find((item) => item.id === product.id);
+    const existingProduct = cart.find((item) => item._id === product._id);
 
     if (existingProduct) {
       setCart(
         cart.map((item) =>
-          item.id === product.id
+          item._id === product._id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         )

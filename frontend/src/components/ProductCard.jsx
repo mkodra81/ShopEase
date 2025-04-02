@@ -5,11 +5,13 @@ import { CartContext } from '../App';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useContext(CartContext);
+
+  const BACKEND_URL = "http://localhost:5000";
   
   return (
     <div className="product-card card h-100">
       <img 
-        src={product.image} 
+        src={`${BACKEND_URL}/${product.image}`} 
         className="card-img-top" 
         alt={product.name}
         style={{ height: '200px', objectFit: 'cover' }}

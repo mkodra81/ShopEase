@@ -27,9 +27,18 @@ const Checkout = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+  const handleProcced = () => {
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.address || !formData.city || !formData.zip) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+    setStep(2);
+  };
   
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const mockOrderId = "ORD-" + Math.floor(1000 + Math.random() * 9000);
     
     clearCart();
@@ -167,7 +176,7 @@ const Checkout = () => {
                         <button
                           type="button"
                           className="btn btn-purple"
-                          onClick={() => setStep(2)}
+                          onClick={() => handleProcced()}
                         >
                           Continue to Payment
                         </button>

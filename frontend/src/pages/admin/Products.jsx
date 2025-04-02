@@ -1,45 +1,57 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
 import AdminNavbar from "../../components/AdminNavbar";
 import { useProductStore } from "../../data/products.js";
 
 const Products = () => {
   const products = useProductStore((state) => state.products);
+  const fetchAllProducts = useProductStore((state) => state.fetchAllProducts);
   const addNewProduct = useProductStore((state) => state.addNewProduct);
   const updateProduct = useProductStore((state) => state.updateProduct);
   const deleteProduct = useProductStore((state) => state.deleteProduct);
 
-  const [searchParams] = useSearchParams();
-  const productIdParam = searchParams.get("_id");
 
-  const [productList, setProductList] = useState([...products]);
+  const [productList, setProductList] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [currentProduct, setCurrentProduct] = useState({
     name: "",
     description: "",
     price: 0,
-    image: "",
+    image: null,
     category: "",
     inventory: 0,
     featured: false,
   });
 
-  useEffect(() => {
-    if (productIdParam) {
-      const product = products.find((p) => p._id === parseInt(productIdParam));
-      if (product) {
-        setCurrentProduct({ ...product });
-        setShowForm(true);
-      }
-    }
-  }, [productIdParam]);
+  const BACKEND_URL = "http://localhost:5000";
 
+  // Fetch products on component mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      await fetchAllProducts();
+    };
+    fetchProducts();
+  }, [fetchAllProducts, products]);
+
+  // Synchronize productList with products from Zustand store
+  useEffect(() => {
+    setProductList(products);
+  }, [products]);
+
+  // Handle file upload
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setCurrentProduct({ ...currentProduct, image: file });
+    }
+  };
+
+  // Handle search
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
 
     if (e.target.value === "") {
-      setProductList([...products]);
+      setProductList(products);
     } else {
       const filtered = products.filter(
         (product) =>
@@ -50,6 +62,7 @@ const Products = () => {
     }
   };
 
+  // Handle input changes
   const handleInputChange = (e) => {
     const value =
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
@@ -59,67 +72,73 @@ const Products = () => {
     });
   };
 
+  // Handle save (add or update product)
   const handleSave = async (e) => {
     e.preventDefault();
 
-    if (!currentProduct._id) {
-      try {
-        const newProduct = await addNewProduct(currentProduct);
-        setProductList([...products], newProduct);
-      } catch (error) {
-        console.error("Error adding product:", error.message);
-      }
-    } else {
-      try {
-        const updatedProduct = await updateProduct(
-          currentProduct._id,
-          currentProduct
-        );
-        console.log("Updated product:", updatedProduct);
-        const index = products.findIndex((p) => p._id === currentProduct._id);
-        if (index !== -1) {
-          products[index] = updatedProduct;
-          console.log(products)
-          setProductList([...products]);
-        }
-      } catch (error) {
-        console.error("Error updating product:", error.message);
-      }
+    const formData = new FormData();
+    formData.append("name", currentProduct.name);
+    formData.append("description", currentProduct.description);
+    formData.append("price", currentProduct.price);
+    formData.append("category", currentProduct.category);
+    formData.append("inventory", currentProduct.inventory);
+    formData.append("featured", currentProduct.featured);
+    if (currentProduct.image) {
+      formData.append("image", currentProduct.image); // File field
     }
 
-    // Reset form
-    setShowForm(false);
-    setCurrentProduct({
-      name: "",
-      description: "",
-      price: 0,
-      image: "",
-      category: "",
-      inventory: 0,
-      featured: false,
-    });
+    try {
+      if (!currentProduct._id) {
+        // Add new product
+        const newProduct = await addNewProduct(formData);
+        setProductList([...productList], newProduct);
+      } else {
+        // Update existing product
+        const updatedProduct = await updateProduct(
+          currentProduct._id,
+          formData
+        );
+        setProductList(
+          productList.map((product) =>
+            product._id === updatedProduct._id ? updatedProduct : product
+          )
+        );
+      }
+      setShowForm(false);
+      setCurrentProduct({
+        name: "",
+        description: "",
+        price: 0,
+        image: null,
+        category: "",
+        inventory: 0,
+        featured: false,
+      });
+    } catch (error) {
+      console.error("Error saving product:", error.message);
+    }
   };
 
+  // Handle delete
   const handleDelete = async (_id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) {
       return;
     }
 
-    await deleteProduct(_id);
-
-    const index = products.findIndex((p) => p._id === _id);
-    if (index !== -1) {
-      products.splice(index, 1);
-      setProductList([...products]);
+    try {
+      await deleteProduct(_id);
+    } catch (error) {
+      console.error("Error deleting product:", error.message);
     }
   };
 
+  // Handle adding a new product
   const handleAddNew = () => {
     setCurrentProduct({
       name: "",
       description: "",
       price: 0,
-      image: "https://picsum.photos/id/1/500/500",
+      image: null,
       category: "",
       inventory: 0,
       featured: false,
@@ -127,18 +146,20 @@ const Products = () => {
     setShowForm(true);
   };
 
+  // Handle editing a product
   const handleEdit = (product) => {
-    setCurrentProduct({ ...product });
+    setCurrentProduct({ ...product, image: null }); 
     setShowForm(true);
   };
 
+  // Handle cancel
   const handleCancel = () => {
     setShowForm(false);
     setCurrentProduct({
       name: "",
       description: "",
       price: 0,
-      image: "",
+      image: null,
       category: "",
       inventory: 0,
       featured: false,
@@ -161,13 +182,13 @@ const Products = () => {
           <div className="card mb-4">
             <div className="card-header bg-purple text-white">
               <h5 className="mb-0">
-                {currentProduct._id === 0 ? "Add New Product" : "Edit Product"}
+                {currentProduct._id ? "Edit Product" : "Add New Product"}
               </h5>
             </div>
             <div className="card-body">
               <form onSubmit={handleSave}>
                 <div className="row mb-3">
-                  <div className="col-md-6 mb-3 mb-md-0">
+                  <div className="col-md-6">
                     <label htmlFor="name" className="form-label">
                       Product Name
                     </label>
@@ -213,7 +234,7 @@ const Products = () => {
                 </div>
 
                 <div className="row mb-3">
-                  <div className="col-md-4 mb-3 mb-md-0">
+                  <div className="col-md-4">
                     <label htmlFor="price" className="form-label">
                       Price ($)
                     </label>
@@ -228,7 +249,7 @@ const Products = () => {
                       required
                     />
                   </div>
-                  <div className="col-md-4 mb-3 mb-md-0">
+                  <div className="col-md-4">
                     <label htmlFor="inventory" className="form-label">
                       Inventory
                     </label>
@@ -244,15 +265,14 @@ const Products = () => {
                   </div>
                   <div className="col-md-4">
                     <label htmlFor="image" className="form-label">
-                      Image URL
+                      Product Image
                     </label>
                     <input
-                      type="text"
+                      type="file"
                       className="form-control"
                       id="image"
                       name="image"
-                      value={currentProduct.image}
-                      onChange={handleInputChange}
+                      onChange={handlePhotoUpload}
                       required
                     />
                   </div>
@@ -331,7 +351,7 @@ const Products = () => {
                           <td>{product._id}</td>
                           <td>
                             <img
-                              src={product.image}
+                              src={`${BACKEND_URL}/${product.image}`}
                               alt={product.name}
                               style={{
                                 width: "50px",
@@ -388,4 +408,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Products;  

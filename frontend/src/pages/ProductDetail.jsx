@@ -14,6 +14,8 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { addToCart } = useContext(CartContext);
   const [quantity, setQuantity] = useState(1);
+
+  const BACKEND_URL = "http://localhost:5000";
   
   const product = getProductById(_id);
   
@@ -50,7 +52,7 @@ const ProductDetail = () => {
         <div className="row">
           <div className="col-md-6 mb-4 mb-md-0">
             <img
-              src={product.image}
+              src={`${BACKEND_URL}/${product.image}`}
               alt={product.name}
               className="img-fluid rounded shadow"
             />

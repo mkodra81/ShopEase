@@ -18,8 +18,6 @@ const Home = () => {
   }
   , []);
 
-
-  console.log(products);
   const featuredProducts = products.filter(product => product.featured).slice(0, 4);
   
   return (
