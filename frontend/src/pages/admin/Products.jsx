@@ -23,7 +23,7 @@ const Products = () => {
     featured: false,
   });
 
-  const BACKEND_URL = "http://localhost:5000";
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL 
 
   // Fetch products on component mount
   useEffect(() => {

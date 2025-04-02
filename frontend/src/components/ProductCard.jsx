@@ -3,10 +3,11 @@ import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CartContext } from '../App';
 
+
 const ProductCard = ({ product }) => {
   const { addToCart } = useContext(CartContext);
 
-  const BACKEND_URL = "http://localhost:5000";
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL 
   
   return (
     <div className="product-card card h-100">

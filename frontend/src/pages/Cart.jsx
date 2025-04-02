@@ -9,7 +9,7 @@ const Cart = () => {
   const navigate = useNavigate();
   const { cart, removeFromCart, updateQuantity, cartTotal } = useContext(CartContext);
 
-  const BACKEND_URL = 'http://localhost:5000';
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL 
   
   if (cart.length === 0) {
     return (
