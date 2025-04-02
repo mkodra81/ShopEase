@@ -21,7 +21,7 @@ const App = () => {
   const [cart, setCart] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const addToCart = (product : any) => {
+  const addToCart = (product: any) => {
     const existingProduct = cart.find((item) => item._id === product._id);
 
     if (existingProduct) {
@@ -56,11 +56,14 @@ const App = () => {
     setCart([]);
   };
 
-  const adminLogin = (credentials) => {
-    // Simple mock login - in a real app, this would validate against a backend
+  const USERNAME = import.meta.env.VITE_ADMIN_USERNAME;
+  const PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+
+  const adminLogin = (credentials : any) => {
+
     if (
-      credentials.username === "admin" &&
-      credentials.password === "password"
+      credentials.username === USERNAME &&
+      credentials.password === PASSWORD
     ) {
       setIsAdmin(true);
       return true;
@@ -82,7 +85,7 @@ const App = () => {
           updateQuantity,
           clearCart,
           cartTotal: cart.reduce(
-            (total, item) => total + item.price * item.quantity, 
+            (total, item) => total + item.price * item.quantity,
             0
           ),
         }}

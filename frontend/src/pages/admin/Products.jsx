@@ -25,7 +25,6 @@ const Products = () => {
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL 
 
-  // Fetch products on component mount
   useEffect(() => {
     const fetchProducts = async () => {
       await fetchAllProducts();
@@ -33,12 +32,10 @@ const Products = () => {
     fetchProducts();
   }, [fetchAllProducts, products]);
 
-  // Synchronize productList with products from Zustand store
   useEffect(() => {
     setProductList(products);
   }, [products]);
 
-  // Handle file upload
   const handlePhotoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -46,7 +43,6 @@ const Products = () => {
     }
   };
 
-  // Handle search
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
 
@@ -62,7 +58,6 @@ const Products = () => {
     }
   };
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const value =
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
@@ -72,7 +67,6 @@ const Products = () => {
     });
   };
 
-  // Handle save (add or update product)
   const handleSave = async (e) => {
     e.preventDefault();
 
@@ -89,11 +83,9 @@ const Products = () => {
 
     try {
       if (!currentProduct._id) {
-        // Add new product
         const newProduct = await addNewProduct(formData);
         setProductList([...productList], newProduct);
       } else {
-        // Update existing product
         const updatedProduct = await updateProduct(
           currentProduct._id,
           formData
@@ -119,7 +111,6 @@ const Products = () => {
     }
   };
 
-  // Handle delete
   const handleDelete = async (_id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) {
       return;
@@ -132,7 +123,6 @@ const Products = () => {
     }
   };
 
-  // Handle adding a new product
   const handleAddNew = () => {
     setCurrentProduct({
       name: "",
@@ -146,13 +136,11 @@ const Products = () => {
     setShowForm(true);
   };
 
-  // Handle editing a product
   const handleEdit = (product) => {
     setCurrentProduct({ ...product, image: null }); 
     setShowForm(true);
   };
 
-  // Handle cancel
   const handleCancel = () => {
     setShowForm(false);
     setCurrentProduct({

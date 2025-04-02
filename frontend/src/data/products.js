@@ -12,7 +12,7 @@ export const useProductStore = create((set, get) => ({
       set({ products: res.data.data });
     } catch (error) {
       console.error("Error fetching products:", error.message);
-      set({ products: [] }); // Reset products on error
+      set({ products: [] }); 
     }
   },
 
@@ -45,18 +45,16 @@ export const useProductStore = create((set, get) => ({
           product._id === id ? { ...product, ...res.data.data } : product
         )
       }));
-      return res.data.data; // Return the updated product data
+      return res.data.data; 
     } catch (error) {
       console.error("Error updating product:", error.response?.data || error.message);
     }
   },
 
-  // Get a product by ID
   getProductById: (_id) => {
     return get().products.find((product) => product._id === (_id));
   },
 
-  // Get products by category
   getProductsByCategory: (category) => {
     const products = get().products;
     console.log("Products:", products);

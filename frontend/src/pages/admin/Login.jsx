@@ -13,12 +13,6 @@ const Login = () => {
   const { adminLogin, isAdmin } = useContext(AuthContext);
   const navigate = useNavigate();
   
-  // If already logged in, redirect to admin dashboard
-  if (isAdmin) {
-    navigate('/admin');
-    return null;
-  }
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCredentials({ ...credentials, [name]: value });
@@ -28,7 +22,6 @@ const Login = () => {
     e.preventDefault();
     setError('');
     
-    // For demo, username: admin, password: password
     const success = adminLogin(credentials);
     
     if (success) {
