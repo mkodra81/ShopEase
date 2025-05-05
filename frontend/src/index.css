@@ -1,0 +1,82 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --purple-primary: #6b46c1;
+  --purple-light: #9f7aea;
+  --purple-dark: #553c9a;
+  --white: #ffffff;
+  --black: #1a202c;
+  --gray-light: #e2e8f0;
+  --gray-medium: #a0aec0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.btn-purple {
+  background-color: var(--purple-primary);
+  color: var(--white);
+}
+
+.btn-gray {
+  background-color: gray;
+  color: var(--black);
+}
+
+.btn-purple:hover {
+  background-color: var(--purple-dark);
+  color: var(--white);
+}
+
+.text-purple {
+  color: var(--purple-primary);
+}
+
+.bg-purple {
+  background-color: var(--purple-primary);
+}
+
+.bg-purple-light {
+  background-color: var(--purple-light);
+}
+
+.navbar-purple {
+  background-color: var(--purple-primary);
+}
+
+.footer-purple {
+  background-color: var(--purple-dark);
+  color: var(--white);
+}
+
+.product-card {
+  transition: transform 0.3s ease;
+  border: 1px solid var(--gray-light);
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cart-icon {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--purple-light);
+  color: var(--white);
+  border-radius: 50%;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
