@@ -15,7 +15,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       await fetchAllProducts().then(() => {
-          setLoading(false); 
+        setLoading(false); 
       })
     };
     fetchProducts();

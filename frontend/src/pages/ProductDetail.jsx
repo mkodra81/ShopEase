@@ -15,7 +15,7 @@ const ProductDetail = () => {
   const { addToCart } = useContext(CartContext);
   const [quantity, setQuantity] = useState(1);
 
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL 
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
   
   const product = getProductById(_id);
   

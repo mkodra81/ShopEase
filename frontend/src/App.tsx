@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
+import axios from "axios";
 
 // Customer Pages
 import Home from "./pages/Home";
@@ -9,19 +10,25 @@ import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderTracking from "./pages/OrderTracking";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup"
 
 // Admin Pages
 import AdminProducts from "./pages/admin/Products";
-import AdminLogin from "./pages/admin/Login";
+import AdminOrders from "./pages/admin/Orders";
+
+//Corriers Pages
+import CorrierDashboard from "./pages/corrier/CorrierDashboard";
+import CorrierOrders from "./pages/corrier/CorrierOrders";
 
 export const CartContext = createContext(null);
 export const AuthContext = createContext(null);
 
 const App = () => {
   const [cart, setCart] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [user, setUser] = useState(false);
 
-  const addToCart = (product: any, quantity : number) => {
+  const addToCart = (product: any, quantity: number) => {
     const existingProduct = cart.find((item) => item._id === product._id);
 
     if (existingProduct) {
@@ -33,23 +40,25 @@ const App = () => {
         )
       );
     } else {
-      setCart([...cart, { ...product, quantity}]);
+      setCart([...cart, { ...product, quantity }]);
     }
   };
 
-  const removeFromCart = (productId : string) => {
+  const removeFromCart = (productId: string) => {
     setCart(cart.filter((item) => item._id !== productId));
   };
 
-  const updateQuantity = (productId : string, quantity : number) => {
-    console.log(quantity)
+  const updateQuantity = (productId: string, quantity: number) => {
+    console.log(quantity);
     if (quantity <= 0) {
       removeFromCart(productId);
       return;
     }
 
     setCart(
-      cart.map((item) => (item._id === productId ? { ...item, quantity } : item))
+      cart.map((item) =>
+        item._id === productId ? { ...item, quantity } : item
+      )
     );
   };
 
@@ -57,27 +66,36 @@ const App = () => {
     setCart([]);
   };
 
-  const USERNAME = import.meta.env.VITE_ADMIN_USERNAME;
-  const PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+  const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
-  const adminLogin = (credentials : any) => {
-
-    if (
-      credentials.username === USERNAME &&
-      credentials.password === PASSWORD
-    ) {
-      setIsAdmin(true);
-      return true;
+  const fetchUser = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/users/me", { withCredentials: true});
+      setUser(res.data);
+    } catch {
+      setUser(null);
     }
-    return false;
   };
 
-  const adminLogout = () => {
-    setIsAdmin(false);
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const login = async () => {
+    await fetchUser();
+  };
+
+  const logout = async () => {
+    await axios.post(
+      "http://localhost:5000/api/users/logout",
+      {},
+      { withCredentials: true }
+    );
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAdmin, adminLogin, adminLogout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       <CartContext.Provider
         value={{
           cart,
@@ -99,11 +117,19 @@ const App = () => {
             <Route path="/products/:_id" element={<ProductDetail />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/order-tracking/:id" element={<OrderTracking />} />
+            <Route path="/order-tracking/:orderId" element={<OrderTracking />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
 
             {/* Admin Routes */}
-            <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminProducts />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
+
+            {/* Corrier Routes */}
+            <Route path="/corrier" element={<CorrierDashboard />} />
+            <Route path="/corrier/my-orders" element={<CorrierOrders />} />
+
+            {/* 404 Not Found */}
 
             <Route path="*" element={<NotFound />} />
           </Routes>

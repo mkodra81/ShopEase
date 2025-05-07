@@ -1,5 +1,4 @@
-
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -8,21 +7,45 @@ import { CartContext } from '../App';
 const Cart = () => {
   const navigate = useNavigate();
   const { cart, updateQuantity, cartTotal } = useContext(CartContext);
+  const [orderId, setOrderId] = useState(""); 
 
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL 
+  const handleTrackOrder = () => {
+    if (orderId.trim()) {
+      navigate(`/order-tracking/${orderId.trim()}`);
+    } 
+  };
+
+  const BACKEND_URL = import.meta.env.BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
   
   if (cart.length === 0) {
     return (
       <div>
         <Navbar />
-        <div className="container py-5 text-center">
-          <div className="py-5">
-            <h1 className="mb-4">Your Cart is Empty</h1>
-            <p className="mb-4">Looks like you haven't added any products to your cart yet.</p>
-            <Link to="/products" className="btn btn-purple btn-lg">
-              Start Shopping
-            </Link>
-          </div>
+        <div className="container py-5 my-5 text-center">
+        <div className="d-flex flex-column align-items-center gap-3 mt-4">
+  <Link to="/products" className="btn btn-purple btn-lg">
+    Start Shopping
+  </Link>
+
+  <span className="text-muted">or</span>
+
+  <div className="d-flex gap-2 flex-wrap justify-content-center">
+    <input
+      type="text"
+      value={orderId}
+      onChange={(e) => setOrderId(e.target.value)}
+      placeholder="Enter Order ID"
+      className="px-4 py-2 border border-darkbrown rounded-md text-darkbrown placeholder-gray-500"
+    />
+    <button
+      onClick={handleTrackOrder}
+      className="bg-transparent border border-darkbrown text-darkbrown px-4 py-2 rounded-md hover:bg-darkbrown hover:text-panna transition"
+    >
+      Track Order
+    </button>
+  </div>
+</div>
+
         </div>
         <Footer />
       </div>

@@ -1,54 +1,97 @@
-
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { CartContext } from '../App';
+import { AuthContext } from '../App';
+import axios from 'axios';
+import { addDays } from 'date-fns';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { cart, cartTotal, clearCart } = useContext(CartContext);
-  
+  const { user } = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    address: '',
-    city: '',
-    state: '',
-    zip: '',
-    country: 'Albania',
-    paymentMethod: 'Debit'
+    firstName: "",
+    lastName: "",
+    email: "",
+    address: "",
+    city: "",
+    phone: "",
+    zip: "",
+    country: "ALB",
+    paymentMethod: "Credit",
   });
-  
+
   const [step, setStep] = useState(1);
-  
+  const [errors, setErrors] = useState({}); // State to track validation errors
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prevErrors) => {
+        const newErrors = { ...prevErrors };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const handleProcced = () => {
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.address || !formData.city || !formData.zip) {
-      alert('Please fill in all required fields.');
-      return;
+    const required = [
+      "firstName",
+      "lastName",
+      "email",
+      "address",
+      "city",
+      "zip",
+      "phone", // Added phone as required
+    ];
+    const newErrors = {};
+    required.forEach((key) => {
+      if (!formData[key]) {
+        newErrors[key] = "This field is required.";
+      }
+    });
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      setStep(2);
     }
-    setStep(2);
   };
-  
-  const handleSubmit = (e) => {
+  const BACKEND_URL = import.meta.env.BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const mockOrderId = "ORD-" + Math.floor(1000 + Math.random() * 9000);
-    
+
+    const response = await axios.post(BACKEND_URL + "/api/orders", {
+      estimatedDelivery: addDays(new Date(), 1),
+      price: cartTotal,
+      items: cart.map((product) => ({
+        productId: product._id,
+        quantity: product.quantity,
+      })),
+      orderDetails: {
+        ...formData,
+        userId: user ? user.id : null, 
+      }
+    });
+
+    const newOrderId = response.data._id;
+    console.log(newOrderId);
+
+    navigate(`/order-tracking/${newOrderId}`);
     clearCart();
-    navigate(`/order-tracking/${mockOrderId}`);
   };
-  
-  if (cart.length === 0) {
-    navigate('/cart');
-    return null;
-  }
+
+  const shippingCost = cartTotal >= 50 ? 0 : 5.99;
+  const tax = cartTotal * 0.08;
+  const total = cartTotal + shippingCost + tax;
+
 
   return (
     <div>
@@ -84,6 +127,7 @@ const Checkout = () => {
                             name="firstName"
                             value={formData.firstName}
                             onChange={handleChange}
+                            
                             required
                           />
                         </div>
@@ -155,6 +199,19 @@ const Checkout = () => {
                       </div>
                       
                       <div className="mb-3">
+                        <label htmlFor="phone" className="form-label">Phone</label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="phone"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          required
+                        />
+                      </div>
+                      
+                      <div className="mb-3">
                         <label htmlFor="country" className="form-label">Country</label>
                         <select
                           className="form-select"
@@ -192,7 +249,7 @@ const Checkout = () => {
                             type="radio"
                             name="paymentMethod"
                             id="creditCard"
-                            value="credit"
+                            value="Credit"
                             checked={formData.paymentMethod === 'credit'}
                             onChange={handleChange}
                           />
@@ -206,7 +263,7 @@ const Checkout = () => {
                             type="radio"
                             name="paymentMethod"
                             id="paypal"
-                            value="paypal"
+                            value="Paypal"
                             checked={formData.paymentMethod === 'paypal'}
                             onChange={handleChange}
                           />
@@ -282,11 +339,11 @@ const Checkout = () => {
                 <h5 className="mb-3">Need Help?</h5>
                 <p className="mb-2">
                   <i className="bi bi-telephone me-2"></i>
-                  Call us: (555) 123-4567
+                  Call us: +355 123 456 789
                 </p>
                 <p className="mb-0">
                   <i className="bi bi-envelope me-2"></i>
-                  Email: support@purplecartopia.com
+                  Email: support@shopease.com
                 </p>
               </div>
             </div>

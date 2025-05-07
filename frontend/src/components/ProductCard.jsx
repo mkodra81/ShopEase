@@ -7,7 +7,7 @@ import { Skeleton } from '../components/ui/skeleton'
 const ProductCard = ({loading, product }) => {
   const { addToCart } = useContext(CartContext);
 
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL 
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
 
   if (loading) {
     return (
