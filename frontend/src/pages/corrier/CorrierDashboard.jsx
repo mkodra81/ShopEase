@@ -21,7 +21,7 @@ const CorrierDashboard = () => {
   const fetchOrders = useOrderStore((state) => state.getOrdersByStatus);
   const { user } = useContext(AuthContext);
 
-  const BACKEND_URL = "http://localhost:5000"; // Replace with your backend URL
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
   const fetchOrdersByStatus = async () => {
     setLoading(true);

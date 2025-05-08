@@ -66,8 +66,8 @@ const App = () => {
     setCart([]);
   };
 
-  // const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-  const VITE_BACKEND_URL = "http://localhost:5000";
+  const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+  // const VITE_BACKEND_URL = "http://localhost:5000";
 
   const fetchUser = async () => {
     try {
