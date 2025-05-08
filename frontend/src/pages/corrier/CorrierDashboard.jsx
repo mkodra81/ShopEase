@@ -20,6 +20,7 @@ const CorrierDashboard = () => {
 
   const fetchOrders = useOrderStore((state) => state.getOrdersByStatus);
   const { user } = useContext(AuthContext);
+  console.log(user);
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
@@ -141,7 +142,7 @@ const CorrierDashboard = () => {
             </DialogHeader>
             <div>
               <QRCode
-                value={`${BACKEND_URL}/api/orders?id=${selectedOrder._id}&status=Accepted&corrierId=${user._id}`}
+                value={`${BACKEND_URL}/api/orders?id=${selectedOrder._id}&status=Accepted&corrierId=${user.id}`}
                 size={256}
                 style={{ margin: "0 auto" }}
               />
