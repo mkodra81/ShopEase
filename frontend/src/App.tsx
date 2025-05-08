@@ -66,11 +66,12 @@ const App = () => {
     setCart([]);
   };
 
-  const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+  // const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+  const VITE_BACKEND_URL = "http://localhost:5000";
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/users/me", { withCredentials: true});
+      const res = await axios.get(VITE_BACKEND_URL + "/api/users/me", { withCredentials: true});
       setUser(res.data);
     } catch {
       setUser(null);
@@ -87,7 +88,7 @@ const App = () => {
 
   const logout = async () => {
     await axios.post(
-      "http://localhost:5000/api/users/logout",
+      VITE_BACKEND_URL + "/api/users/logout",
       {},
       { withCredentials: true }
     );

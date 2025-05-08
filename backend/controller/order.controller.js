@@ -65,7 +65,34 @@ const updateOrderStatus = async (req, res) => {
     if (!updatedOrder) {
       return res.status(404).json({ message: "Order not found" });
     }
-    res.status(200).json(updatedOrder);
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Order Accepted</title>
+          <style>
+            body {
+              font-family: sans-serif;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              background: #f0f0f0;
+              text-align: center;
+            }
+            h1 {
+              color: green;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>✅ Order Accepted!</h1>
+          <p>Order ID: ${id}</p>
+          <p>Status updated to: <strong>${status}</strong></p>
+        </body>
+      </html>
+    `);    res.status(200).json(updatedOrder);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
