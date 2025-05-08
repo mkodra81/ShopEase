@@ -11,7 +11,7 @@ import Checkout from "./pages/Checkout";
 import OrderTracking from "./pages/OrderTracking";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup"
+import Signup from "./pages/Signup";
 
 // Admin Pages
 import AdminProducts from "./pages/admin/Products";
@@ -66,29 +66,11 @@ const App = () => {
     setCart([]);
   };
 
-  const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-  // const VITE_BACKEND_URL = "http://localhost:5000";
-
-  const fetchUser = async () => {
-    try {
-      const res = await axios.get(VITE_BACKEND_URL + "/api/users/me", { withCredentials: true});
-      setUser(res.data);
-    } catch {
-      setUser(null);
-    }
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  const login = async () => {
-    await fetchUser();
-  };
+  const BACKEND_URL = "http://localhost:5000"; // Replace with your backend URL
 
   const logout = async () => {
     await axios.post(
-      VITE_BACKEND_URL + "/api/users/logout",
+      BACKEND_URL + "/api/users/logout",
       {},
       { withCredentials: true }
     );
@@ -96,7 +78,7 @@ const App = () => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, logout }}>
       <CartContext.Provider
         value={{
           cart,
@@ -118,7 +100,10 @@ const App = () => {
             <Route path="/products/:_id" element={<ProductDetail />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/order-tracking/:orderId" element={<OrderTracking />} />
+            <Route
+              path="/order-tracking/:orderId"
+              element={<OrderTracking />}
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 

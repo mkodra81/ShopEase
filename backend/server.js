@@ -13,21 +13,24 @@ const app = express();
 
 config();
 const PORT = process.env.PORT;
+const SESSION_SECRET = process.env.SESSION_SECRET;
 
 app.use(cookieParser());
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 }, 
-  })
-)
 
 app.use(
   cors({
     origin: "http://localhost:5173", // Replace with your frontend's URL
     credentials: true, // Allow credentials (cookies, etc.)
+    exposedHeaders: ["set-cookie"],
+  })
+);
+
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 },
   })
 );
 

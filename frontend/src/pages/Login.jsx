@@ -10,7 +10,7 @@ const Login = () => {
   });
 
   const [error, setError] = useState("");
-  const { login } = useContext(AuthContext);
+  const { user, setUser, login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -30,9 +30,9 @@ const Login = () => {
         credentials,
         { withCredentials: true }
       );
+      setUser(res.data);
+      console.log("User data:", user); // Log the user data for debugging
       if (res.status === 200) {
-        await login(); 
-
         switch (res.data.role) {
           case "admin":
             navigate("/admin");

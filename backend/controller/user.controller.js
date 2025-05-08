@@ -75,20 +75,33 @@ const loginUser = async (req, res) => {
 
 const getMe = async (req, res) => {
   try {
-    const token = req.cookies.token;
+    const { token } = req.cookies;
     if (!token) {
+      console.error("Token not found in cookies");
       return res.status(401).json({ message: "Unauthorized" });
     }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      console.error("Token verification failed", err);
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
     const user = await User.findById(decoded.id).select("-password");
     if (!user) {
+      console.error("User not found for decoded token ID");
       return res.status(404).json({ message: "User not found" });
     }
+
+    console.log("User fetched successfully", user);
     return res.status(200).json(user);
   } catch (error) {
+    console.error("Error in getMe function", error);
     return res.status(500).json({ message: error.message });
   }
-}
+};
 
 const logoutUser = async (req, res) => {
   try {
