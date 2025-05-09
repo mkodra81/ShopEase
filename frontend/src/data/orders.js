@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
+const BACKEND_URL ="http://localhost:5000"; // Replace with your backend URL
 
 const useOrderStore = create((set, get) => ({
   orders : [],
@@ -19,12 +19,12 @@ const useOrderStore = create((set, get) => ({
   updateOrderStatus: async (orderId, status, corrierId) => {
     try {
       const res = await axios.put(`${BACKEND_URL}/api/orders/${orderId}`, { status, corrierId });
-      console.log("Order status updated:", res.data);
       set((state) => ({
         orders: state.orders.map((order) =>
           order._id === orderId ? { ...order, status: res.data.data.status } : order
         )
       }));
+      return res
     } catch (error) {
       console.error("Error updating order status:", error.message);
     }
@@ -41,8 +41,15 @@ const useOrderStore = create((set, get) => ({
     }
   },
 
-  getOrderById: (orderId) => {
-    return get().orders.find((order) => order._id === orderId);
+  getOrderById: async (orderId) => {
+    try {
+      const res = await axios.get(`${BACKEND_URL}/api/orders/${orderId}`)
+      const order = res.data
+      return order
+    } catch (error) {
+      console.error("Error fetching orders by status:", error.message);
+      return;
+    }
   },
 
   getOrdersByStatus: async (status) => {

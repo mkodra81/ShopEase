@@ -20,13 +20,28 @@ import AdminOrders from "./pages/admin/Orders";
 //Corriers Pages
 import CorrierDashboard from "./pages/corrier/CorrierDashboard";
 import CorrierOrders from "./pages/corrier/CorrierOrders";
+import UpdatingOrder from "./pages/corrier/UpdatingOrder";
 
 export const CartContext = createContext(null);
 export const AuthContext = createContext(null);
 
 const App = () => {
   const [cart, setCart] = useState([]);
-  const [user, setUser] = useState(false);
+  // Initialize user from localStorage if available
+  const [user, setUserState] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  // Wrap setUser to also update localStorage
+  const setUser = (user) => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
+    setUserState(user);
+  };
 
   const addToCart = (product: any, quantity: number) => {
     const existingProduct = cart.find((item) => item._id === product._id);
@@ -114,6 +129,7 @@ const App = () => {
             {/* Corrier Routes */}
             <Route path="/corrier" element={<CorrierDashboard />} />
             <Route path="/corrier/my-orders" element={<CorrierOrders />} />
+            <Route path="/corrier/update-status/:orderId" element={<UpdatingOrder />} />
 
             {/* 404 Not Found */}
 

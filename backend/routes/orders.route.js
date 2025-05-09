@@ -7,7 +7,7 @@ router.post("/", createOrder);
 router.get("/:id", getOrderById);
 router.get("/user/:userId", getUserOrders);
 router.get("/status/:status", getOrdersByStatus);
-router.put("/", updateOrderStatus);
+router.put("/:orderId", updateOrderStatus);
 router.get("/corrier/:corrierId", getCorrierOrders); 
 
 export default router;

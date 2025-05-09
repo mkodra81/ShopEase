@@ -22,7 +22,8 @@ const CorrierDashboard = () => {
   const { user } = useContext(AuthContext);
   console.log(user);
 
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+  const BACKEND_URL = "http://localhost:5000";
+  const FRONTEND_URL = "http://localhost:5173";
 
   const fetchOrdersByStatus = async () => {
     setLoading(true);
@@ -142,9 +143,10 @@ const CorrierDashboard = () => {
             </DialogHeader>
             <div>
               <QRCode
-                value={`${BACKEND_URL}/api/orders?id=${selectedOrder._id}&status=Accepted&corrierId=${user.id}`}
+                value={`${FRONTEND_URL}/corrier/update-status/${selectedOrder._id}`}
                 size={256}
                 style={{ margin: "0 auto" }}
+                target="_blank"
               />
             </div>
             <DialogClose asChild>
