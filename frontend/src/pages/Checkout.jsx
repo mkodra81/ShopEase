@@ -62,7 +62,7 @@ const Checkout = () => {
       setStep(2);
     }
   };
-  const BACKEND_URL = import.meta.env.BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,8 +90,6 @@ const Checkout = () => {
 
   const shippingCost = cartTotal >= 50 ? 0 : 5.99;
   const tax = cartTotal * 0.08;
-  const total = cartTotal + shippingCost + tax;
-
 
   return (
     <div>
@@ -250,7 +248,7 @@ const Checkout = () => {
                             name="paymentMethod"
                             id="creditCard"
                             value="Credit"
-                            checked={formData.paymentMethod === 'credit'}
+                            checked={formData.paymentMethod === 'Credit'}
                             onChange={handleChange}
                           />
                           <label className="form-check-label" htmlFor="creditCard">
@@ -264,7 +262,7 @@ const Checkout = () => {
                             name="paymentMethod"
                             id="paypal"
                             value="Paypal"
-                            checked={formData.paymentMethod === 'paypal'}
+                            checked={formData.paymentMethod === 'Paypal'}
                             onChange={handleChange}
                           />
                           <label className="form-check-label" htmlFor="paypal">

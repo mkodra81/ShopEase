@@ -10,7 +10,7 @@ const OrderTracking = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const BACKEND_URL = import.meta.env.BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
 
   useEffect(() => {
     const fetchOrderDetails = async () => {
@@ -27,11 +27,6 @@ const OrderTracking = () => {
 
     fetchOrderDetails();
   }, [orderId]);
-
-  const getStatusIndex = (status) => {
-    const statuses = ['Processing', 'Shipped', 'Out for Delivery', 'Delivered'];
-    return statuses.indexOf(status);
-  };
 
   if (loading) {
     return (
@@ -57,55 +52,23 @@ const OrderTracking = () => {
     );
   }
 
-  const currentStatusIndex = getStatusIndex(order.status);
-  const statuses = ['Processing', 'Shipped', 'Out for Delivery', 'Delivered'];
-
-
   return (
-    <main className="min-h-screen bg-panna text-darkbrown">
+    <main className="">
       <Navbar />
       <div className="container mx-auto px-4 py-10 space-y-8">
-        <h1 className="text-3xl font-semibold">Order Tracking</h1>
+        <h1 className="text-xl font-semibold my-5">Order Tracking</h1>
 
         <div className="bg-white border border-darkbrown rounded-lg shadow p-6 space-y-4">
           <h2 className="text-xl font-semibold">Order ID: {order._id}</h2>
           <p>Status: <span className="font-medium">{order.status}</span></p>
           <p>Estimated Delivery: <span className="font-medium">{order.estimatedDelivery.slice(0,10)}</span></p>
-
-          {/* Progress Bar */}
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-3">Order Progress</h3>
-            <div className="relative pt-1">
-              <div className="overflow-hidden h-4 mb-4 text-xs flex rounded bg-gray-200">
-                {statuses.map((status, index) => (
-                  <div
-                    key={status}
-                    style={{ width: '25%' }}
-                    className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${index <= currentStatusIndex ? 'bg-darkbrown' : 'bg-gray-300'} ${index === 0 ? 'rounded-l' : ''} ${index === statuses.length - 1 ? 'rounded-r' : ''}`}
-                  ></div>
-                ))}
-              </div>
-              <div className="flex justify-between text-xs text-gray-600 px-1">
-                {statuses.map((status) => (
-                  <span key={status} className="w-1/4 text-center">{status}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Order Items - Optional */}
-          {/* <div className="mt-6 border-t pt-4">
-            <h3 className="text-lg font-semibold mb-2">Items in this Order</h3>
-            {order.items.map((item, index) => (
-              <div key={index} className="text-sm">
-                {item.name} (Quantity: {item.quantity})
-              </div>
-            ))}
-          </div> */}
+          <p>Client Name: <span className="font-medium">{order.orderDetails.firstName} {order.orderDetails.lastName}</span></p>
+          <p>Total Amount: <span className="font-medium">{order.price} $</span></p>
+          <p>Shipping Address: <span className="font-medium">{order.orderDetails.address}</span></p>
         </div>
 
-        <div className="text-center">
-          <Link to="/products" className="bg-darkbrown text-panna px-6 py-2 rounded-md hover:opacity-90 transition">
+        <div>
+          <Link to="/products" className="btn btn-purple text-white my-5">
             Continue Shopping
           </Link>
         </div>

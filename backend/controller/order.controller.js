@@ -1,5 +1,28 @@
 import Order from "../models/order.model.js";
 
+const fetchAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.status(200).json({ data: orders });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+const deleteOrder = async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+    const deletedOrder = await Order.findByIdAndDelete(orderId);
+    if (!deletedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.status(200).json({ message: "Order deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 const createOrder = async (req, res) => {
   const { estimatedDelivery, price, items, orderDetails } = req.body;
 
@@ -83,4 +106,4 @@ const getCorrierOrders = async (req, res) => {
   }
 };
 
-export { createOrder, getOrderById, getUserOrders, getOrdersByStatus, updateOrderStatus, getCorrierOrders };
+export { createOrder, getOrderById, getUserOrders, getOrdersByStatus, updateOrderStatus, getCorrierOrders, fetchAllOrders, deleteOrder };

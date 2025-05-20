@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../App';
 import { Skeleton } from '../components/ui/skeleton'
 
@@ -7,7 +7,14 @@ import { Skeleton } from '../components/ui/skeleton'
 const ProductCard = ({loading, product }) => {
   const { addToCart } = useContext(CartContext);
 
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
+  const navigate = useNavigate();
+
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
+  const handleView = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    navigate(`/products/${product._id}`);
+  }
 
   if (loading) {
     return (
@@ -39,10 +46,10 @@ const ProductCard = ({loading, product }) => {
         <p className="card-text mb-2 text-truncate">{product.description}</p>
         <div className="mt-auto">
           <p className="fw-bold">${product.price.toFixed(2)}</p>
-          <div className="d-flex">
-            <Link to={`/products/${product._id}`} className="btn btn-outline-dark me-2 flex-grow-1">
+          <div className="d-flex mt-2">
+            <button onClick={handleView} className="btn btn-outline-dark me-2 flex-grow-1">
               View
-            </Link>
+            </button>
             <button 
               className="btn btn-purple flex-grow-1"
               onClick={() => addToCart(product, 1)}

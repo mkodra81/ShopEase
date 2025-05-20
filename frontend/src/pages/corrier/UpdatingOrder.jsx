@@ -11,6 +11,7 @@ const UpdatingOrder = () => {
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(1);
   const { user } = useContext(AuthContext);
+  console.log(user)
   
   const { orderId } = useParams();
 
@@ -20,7 +21,7 @@ const UpdatingOrder = () => {
       const res = await updateOrderStatus(order._id, updateStatus, user.id);
       setOrder({ ...order, status: updateStatus });
       setStep((prev) => prev + 1);
-      
+
       if (res.status === 200) {
         alert("Order status updated successfully!");
         setLoading(false);

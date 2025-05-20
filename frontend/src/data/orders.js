@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const BACKEND_URL ="http://localhost:5000"; // Replace with your backend URL
+const BACKEND_URL = "http://localhost:5000"; // Replace with your backend URL
 
 const useOrderStore = create((set, get) => ({
   orders : [],
@@ -38,6 +38,20 @@ const useOrderStore = create((set, get) => ({
       }));
     } catch (error) {
       console.error("Error deleting order:", error.message);
+    }
+  },
+
+  updateOrderStatus: async (orderId, status, corrierId) => {
+    try {
+      const res = await axios.put(`${BACKEND_URL}/api/orders/${orderId}`, { status, corrierId });
+      set((state) => ({
+        orders: state.orders.map((order) =>
+          order._id === orderId ? { ...order, status: res.data.data.status } : order
+        )
+      }));
+      return res
+    } catch (error) {
+      console.error("Error updating order status:", error.message);
     }
   },
 

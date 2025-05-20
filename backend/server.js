@@ -6,47 +6,40 @@ import userRouter from "./routes/users.route.js";
 import orderRouter from "./routes/orders.route.js";
 import cors from "cors";
 import path from "path";
-import session from "express-session";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
 
 const app = express();
 
 config();
-const PORT = process.env.PORT;
-const SESSION_SECRET = process.env.SESSION_SECRET;
+const PORT = process.env.PORT || 5000;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
+app.use(helmet()); //Security
 app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Replace with your frontend's URL
-    credentials: true, 
+    origin: FRONTEND_URL,
+    credentials: true,
     exposedHeaders: ["set-cookie"],
   })
 );
 
-app.use(
-  session({
-    secret: SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24,
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    }, // Adjust the cookie settings as needed
-  })
-);
-
-app.use(express.json({ limit: "1000mb", extended: true }));
-app.use("/images", express.static(path.join(path.resolve(), "images")));
+app.use(express.json({ limit: "100mb" }));
+app.use("/images", express.static(path.resolve("images")));
 
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
 app.use("/api/orders", orderRouter);
 
+// Error handling middleware
+app.use((err, req, res) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Internal Server Error" });
+});
+
 app.listen(PORT, () => {
   connectDb();
-  console.log("Server started at http://localhost:" + PORT);
+  console.log(`Server started at http://localhost:${PORT}`);
 });

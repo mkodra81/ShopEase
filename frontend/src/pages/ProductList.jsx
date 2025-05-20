@@ -31,6 +31,7 @@ const ProductList = () => {
     if (!acc.includes(product.category)) acc.push(product.category);
     return acc;
   }, [])];
+  
   useEffect(() => {
     // Filter products by category
     const categoryProducts = getProductsByCategory(activeCategory);

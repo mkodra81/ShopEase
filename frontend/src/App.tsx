@@ -16,6 +16,7 @@ import Signup from "./pages/Signup";
 // Admin Pages
 import AdminProducts from "./pages/admin/Products";
 import AdminOrders from "./pages/admin/Orders";
+import AdminUsers from "./pages/admin/Users";
 
 //Corriers Pages
 import CorrierDashboard from "./pages/corrier/CorrierDashboard";
@@ -33,8 +34,7 @@ const App = () => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  // Wrap setUser to also update localStorage
-  const setUser = (user) => {
+  const setUser = (user: any) => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
     } else {
@@ -81,7 +81,7 @@ const App = () => {
     setCart([]);
   };
 
-  const BACKEND_URL = "http://localhost:5000"; // Replace with your backend URL
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
 
   const logout = async () => {
     await axios.post(
@@ -89,6 +89,7 @@ const App = () => {
       {},
       { withCredentials: true }
     );
+
     setUser(null);
   };
 
@@ -125,11 +126,15 @@ const App = () => {
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminProducts />} />
             <Route path="/admin/orders" element={<AdminOrders />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
 
             {/* Corrier Routes */}
             <Route path="/corrier" element={<CorrierDashboard />} />
             <Route path="/corrier/my-orders" element={<CorrierOrders />} />
-            <Route path="/corrier/update-status/:orderId" element={<UpdatingOrder />} />
+            <Route
+              path="/corrier/update-status/:orderId"
+              element={<UpdatingOrder />}
+            />
 
             {/* 404 Not Found */}
 

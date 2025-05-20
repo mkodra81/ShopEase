@@ -19,8 +19,7 @@ const CorrierDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchOrders = useOrderStore((state) => state.getOrdersByStatus);
-  const { user } = useContext(AuthContext);
-  console.log(user);
+  const fetchOrderById = useOrderStore((state) => state.getOrderById);
 
   const BACKEND_URL = "http://localhost:5000";
   const FRONTEND_URL = "http://localhost:5173";
@@ -48,18 +47,15 @@ const CorrierDashboard = () => {
 
   useEffect(() => {
     if (!isDialogOpen) return;
-    const interval = setInterval(() => {
-      fetchOrdersByStatus().then(() => {
-        if (selectedOrder) {
-          const updatedOrder = orders.find(
-            (order) => order._id === selectedOrder._id
-          ); 
-          if (updatedOrder && updatedOrder.status !== "Processing") {
-            closeDialog();
-          }
-        } // Fetch orders again to update the list
+    const interval = setInterval(async () => {
+      const status = await fetchOrderById(selectedOrder._id);
+      if (status.status === "Accepted") {
+        alert("Order accepted successfully!");
+        setIsDialogOpen(false);
+        setOrders((prevOrders) =>
+          prevOrders.filter((order) => order._id !== selectedOrder._id)
+        );
       }
-    );
     }
     , 5000);
 

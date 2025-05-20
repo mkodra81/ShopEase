@@ -10,51 +10,69 @@ import {
   DialogClose,
 } from "../../components/ui/dialog";
 import { AuthContext } from "../../App";
+import QRCode from "react-qr-code";
 
 const CorrierOrders = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const fetchOrders = useOrderStore((state) => state.getCorrierOrders);
-  const updateOrderStatus = useOrderStore((state) => state.updateOrderStatus);
+  const fetchOrderById = useOrderStore((state) => state.getOrderById);
+  
   const { user } = useContext(AuthContext);
+  
+  const FRONTEND_URL = "http://localhost:5173";
 
-  const handleAccept = async () => {
-
-    const orderStatus = selectedOrder.status === "Accepted" ? "Delivering" : "Shipped";
-
-    try {
-      await updateOrderStatus(selectedOrder._id, orderStatus, user._id);
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order._id === selectedOrder._id
-            ? { ...order, status: orderStatus }
-            : order
-        )
-      );
-    } catch (error) {
-      console.error("Error accepting order:", error.message);
-    }
+  // Helper to check if order is older than 1 day
+  const isOrderOlderThanOneDay = (order) => {
+    if (!order.createdAt) return false;
+    const orderDate = new Date(order.createdAt);
+    const now = new Date();
+    const diffMs = now - orderDate;
+    return diffMs > 24 * 60 * 60 * 1000; // 1 day in ms
   };
 
   useEffect(() => {
     const fetchOrdersByStatus = async () => {
-      const orders = await fetchOrders(user._id);
-      setOrders(orders.filter((order) => order.status !== "Shipped"));
+      const orders = await fetchOrders(user.id);
+      setOrders(orders.filter((order) => order.status !== "Processing" && !isOrderOlderThanOneDay(order)));
     };
 
     fetchOrdersByStatus();
-  }, [handleAccept, fetchOrders]);
+  }, []); // fetch orders when they are updated
 
   const handleView = (order) => {
-    setSelectedOrder(order);
-    setIsDialogOpen(true);
+    // Only allow dialog for Accepted or Delivering orders
+    if (order.status === "Accepted" || order.status === "Delivering") {
+      setSelectedOrder(order);
+      setIsDialogOpen(true);
+    }
   };
 
   const closeDialog = () => {
     setIsDialogOpen(false);
     setSelectedOrder(null);
   };
+
+
+  useEffect(() => {
+    if (!isDialogOpen) return;
+    const interval = setInterval(async () => {
+      let prevStatus = selectedOrder.status
+      const status = await fetchOrderById(selectedOrder._id);
+
+      if (status.status === "Delivering" && prevStatus === "Accepted" || status.status === "Delivered") {
+        alert("Success!");
+        const updatedOrders = await fetchOrders(user.id);
+        setOrders(updatedOrders.filter((order) => order.status !== "Processing" && !isOrderOlderThanOneDay(order)));
+        setSelectedOrder(null);
+        setIsDialogOpen(false);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isDialogOpen]);
 
   return (
     <main>
@@ -89,10 +107,23 @@ const CorrierOrders = () => {
                       <td>${order.price.toFixed(2)}</td>
                       <td>
                         <button
-                          className="btn btn-sm btn-outline-success me-2"
+                          className={`btn btn-sm me-2 ${
+                            order.status === "Accepted" || order.status === "Delivering"
+                              ? "btn-outline-success"
+                              : "btn-outline-secondary"
+                            }`}
+                            
                           onClick={() => handleView(order)}
+                          disabled={
+                            order.status !== "Accepted" &&
+                            order.status !== "Delivering"
+                          }
                         >
-                          {order.status === "Accepted" ? "Start Delivery" : "Mark as Shipped"}
+                          {order.status === "Accepted"
+                            ? "Start Delivery"
+                            : order.status === "Delivering"
+                            ? "Mark as Delivered"
+                            : "Order Completed"}
                         </button>
                       </td>
                     </tr>
@@ -115,18 +146,20 @@ const CorrierOrders = () => {
               <DialogHeader>
                 <DialogTitle>Order Delivery</DialogTitle>
                 <DialogDescription>
-                  Scan this QR code to accept this order.
+                  {selectedOrder.status === "Accepted"
+                    ? "Scan this QR code to start delivery."
+                    : selectedOrder.status === "Delivering"
+                    ? "Scan this QR code to mark as delivered."
+                    : ""}
                 </DialogDescription>
               </DialogHeader>
               <div>
-                <button className="btn btn-primary mt-4" onClick={handleAccept}>
-                  {/* <img
-                        src={`https://api.qrserver.com/v1/create-qr-code/?data=${selectedOrder._id}`}
-                        alt="QR Code"
-                        className="w-32 h-32"
-                      /> */}
-                  Accept
-                </button>
+                <QRCode
+                  value={`${FRONTEND_URL}/corrier/update-status/${selectedOrder._id}`}
+                  size={256}
+                  style={{ margin: "0 auto" }}
+                  target="_blank"
+                />
               </div>
               <DialogClose asChild>
                 <button className="btn btn-primary mt-4">Close</button>
