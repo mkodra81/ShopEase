@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const BACKEND_URL = "http://localhost:5000"; // Replace with your backend URL
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"; 
 
 const useUserStore = create((set) => ({
   users: [],

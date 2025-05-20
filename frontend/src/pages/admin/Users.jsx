@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import AdminNavbar from "../../components/AdminNavbar";
 import useUserStore from "../../data/users.js";
-import { use } from "react";
 
 const Users = () => {
 
