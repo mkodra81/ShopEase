@@ -31,13 +31,7 @@ app.use("/images", express.static(path.resolve("images")));
 
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
-app.use("/api/orders", orderRouter);
-
-// Error handling middleware
-app.use((err, req, res) => {
-  console.error(err.stack);
-  res.status(500).json({ message: "Internal Server Error" });
-});
+app.use("/api/orders", orderRouter);t
 
 app.listen(PORT, () => {
   connectDb();
