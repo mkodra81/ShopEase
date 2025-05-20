@@ -34,12 +34,12 @@ const Users = () => {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     if (e.target.value === "") {
-      setUsers(users);
+      setUserList(users);
     } else {
       const filtered = users.filter((user) =>
         user.firstName.toLowerCase().includes(e.target.value.toLowerCase())
       );
-      setUsers(filtered);
+      setUserList(filtered);
     }
   };
 

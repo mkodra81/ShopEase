@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"; 
+const BACKEND_URL = "http://localhost:5000"; 
 
 const useOrderStore = create((set, get) => ({
   orders : [],
@@ -83,6 +83,16 @@ const useOrderStore = create((set, get) => ({
       return res.data;
     } catch (error) {
       console.error("Error fetching corrier orders:", error.message);
+      return [];
+    }
+  },
+
+  getOrdersByUserEmail: async (userEmail) => {
+    try {
+      const res = await axios.get(`${BACKEND_URL}/api/orders/user/${userEmail}`);
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching orders by user ID:", error.message);
       return [];
     }
   },

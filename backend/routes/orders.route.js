@@ -7,7 +7,7 @@ router.get("/", fetchAllOrders);
 router.delete("/:orderId", deleteOrder);
 router.post("/", createOrder);
 router.get("/:id", getOrderById);
-router.get("/user/:userId", getUserOrders);
+router.get("/user/:userEmail", getUserOrders);
 router.get("/status/:status", getOrdersByStatus);
 router.put("/:orderId", updateOrderStatus);
 router.get("/corrier/:corrierId", getCorrierOrders); 

@@ -30,7 +30,7 @@ const Login = () => {
         credentials,
         { withCredentials: true }
       );
-      console.log("Response data:", res.data); // Log the response data for debugging
+      console.log(res.data);
       setUser(res.data);
 
       if (res.status === 200) {
@@ -57,8 +57,6 @@ const Login = () => {
       );
     }
   };
-
-  console.log("User state:", user); // Log the user state for debugging
 
   return (
     <div className="min-vh-100 d-flex justify-content-center align-items-center bg-light">

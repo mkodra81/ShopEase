@@ -72,6 +72,7 @@ const loginUser = async (req, res) => {
           lastName: foundUser.lastName,
           email: foundUser.email,
           role: foundUser.role,
+          createdAt: foundUser.createdAt,
         });
       }
     }

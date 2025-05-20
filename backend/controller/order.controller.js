@@ -57,10 +57,10 @@ const getOrderById = async (req, res) => {
 };
 
 const getUserOrders = async (req, res) => {
-  const { userId } = req.params;
+  const { userEmail } = req.params;
 
   try {
-    const orders = await Order.find({ "orderDetails.userId": userId }).populate(
+    const orders = await Order.find({ "orderDetails.email": userEmail }).populate(
       "items.productId"
     );
     res.status(200).json(orders);

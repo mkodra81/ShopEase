@@ -47,7 +47,7 @@ const Checkout = () => {
       "address",
       "city",
       "zip",
-      "phone", // Added phone as required
+      "phone",
     ];
     const newErrors = {};
     required.forEach((key) => {
@@ -62,7 +62,7 @@ const Checkout = () => {
       setStep(2);
     }
   };
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
+  const BACKEND_URL = "http://localhost:5000"; // Replace with your backend URL
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,7 +77,7 @@ const Checkout = () => {
       })),
       orderDetails: {
         ...formData,
-        userId: user ? user.id : null, 
+        userId: user ? user._id : null, 
       }
     });
 
@@ -87,9 +87,6 @@ const Checkout = () => {
     navigate(`/order-tracking/${newOrderId}`);
     clearCart();
   };
-
-  const shippingCost = cartTotal >= 50 ? 0 : 5.99;
-  const tax = cartTotal * 0.08;
 
   return (
     <div>
