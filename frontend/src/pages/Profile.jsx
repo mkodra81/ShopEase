@@ -59,24 +59,32 @@ const Profile = () => {
     setError("");
 
     try {
-      const response = await updateUser(_id, {
-        firstName,
-        lastName,
-        email,
-      });
-      console.log("User updated:", response);
-      if (response) {
-        const loginRes = await axios.post(
-          `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
-          { email, password },
-          { withCredentials: true }
-        );
-
-        setUser(loginRes.data);
+      // Send update request with token in Authorization header
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/${_id}`,
+        { firstName, lastName, email },
+        {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : undefined,
+          },
+          withCredentials: true,
+        }
+      );
+      if (response.data) {
+        setUser(response.data);
       }
     } catch (error) {
+      setError("Error updating user information");
       console.error("Error updating user:", error);
     } finally {
+      setUpdatedUser({
+        _id: updatedUser?._id || "",
+        firstName: updatedUser?.firstName || "",
+        lastName: updatedUser?.lastName || "",
+        email: updatedUser?.email || "",
+        password: ""
+      });
       setShowForm(false);
       setStep(1);
     }
