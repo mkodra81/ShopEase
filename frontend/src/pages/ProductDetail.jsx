@@ -69,10 +69,8 @@ const ProductDetail = () => {
   const handleAddToCart = () => {
     console.log("Adding to cart:", product.name, "Quantity:", quantity);
     for (let i = 0; i < quantity; i++) {
-      console.log("Adding product to cart:", product.name);
       addToCart(product, quantity);
     }
-    navigate("/cart");
   };
 
   return (

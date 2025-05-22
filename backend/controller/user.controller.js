@@ -32,7 +32,6 @@ const registerUser = async (req, res) => {
       await newUser.save();
       return res.status(200).json({ message: "User registered successfully" });
     }
-
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -56,8 +55,7 @@ const loginUser = async (req, res) => {
         return res.status(400).json({ message: "Invalid credentials" });
       } else {
         const token = jwt.sign({ id: foundUser._id }, process.env.JWT_SECRET, {
-          expiresIn: "1d",
-          
+          expiresIn: "5min",
         });
         res.cookie("token", token, {
           httpOnly: true,
@@ -88,7 +86,7 @@ const getMe = async (req, res) => {
       console.error("Token not found in cookies");
       return res.status(401).json({ message: "Unauthorized" });
     }
-    
+
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -118,7 +116,7 @@ const logoutUser = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
+};
 
 const fetchAllUsers = async (req, res) => {
   try {
@@ -137,32 +135,31 @@ const fetchUserById = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     return res.status(200).json(user);
-  }
-  catch (error) {
+  } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
+};
 
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { role } = req.body;
+  const userData = req.body;
+  if (!userData) {
+    return res.status(400).json({ message: "Please fill all fields" });
+  }
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      { role },
-      { new: true }
-    );
+    const updatedUser = await User.findByIdAndUpdate(id, userData, {
+      new: true,
+    });
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
     return res.status(200).json(updatedUser);
-  }
-  catch (error) {
+  } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
+};
 
 const deleteUser = async (req, res) => {
   const { id } = req.params;
@@ -172,11 +169,18 @@ const deleteUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     return res.status(200).json({ message: "User deleted successfully" });
-  }
-  catch (error) {
+  } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
+};
 
-
-export { registerUser, loginUser, getMe, logoutUser, fetchAllUsers, fetchUserById, updateUser, deleteUser };
+export {
+  registerUser,
+  loginUser,
+  getMe,
+  logoutUser,
+  fetchAllUsers,
+  fetchUserById,
+  updateUser,
+  deleteUser,
+};

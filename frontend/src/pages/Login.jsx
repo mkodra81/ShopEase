@@ -10,7 +10,7 @@ const Login = () => {
   });
 
   const [error, setError] = useState("");
-  const { user, setUser, login } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {

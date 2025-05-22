@@ -7,7 +7,6 @@ const Users = () => {
   const users = useUserStore((state) => state.users);
   const fetchAllUsers = useUserStore((state) => state.fetchAllUsers);
   const updateUser = useUserStore((state) => state.updateUser);
-  const deleteUser = useUserStore((state) => state.deleteUser);
 
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");

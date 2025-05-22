@@ -13,9 +13,9 @@ const Checkout = () => {
   const { user } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
+    firstName: user ? user.firstName : "",
+    lastName: user ? user.lastName : "",
+    email: user ? user.email : "",
     address: "",
     city: "",
     phone: "",
