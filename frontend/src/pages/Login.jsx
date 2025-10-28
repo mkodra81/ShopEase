@@ -28,7 +28,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        BACKEND_URL + "/api/users/login",
+        "https://shopease-main-g4rg.onrender.com/api/users/login",
         credentials,
         { withCredentials: true }
       );
