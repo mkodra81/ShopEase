@@ -15,9 +15,9 @@ const PORT = process.env.PORT;
 app.use(cookieParser());
 
 const allowedOrigins = [
-  "http://localhost:5173",
+    "https://shop-ease-delta-amber.vercel.app",
   "https://shop-ease-main.vercel.app",
-  "https://shop-ease-delta-amber.vercel.app"
+
 ];
 
 app.use(cors({
