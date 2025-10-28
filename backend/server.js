@@ -15,20 +15,20 @@ const PORT = process.env.PORT;
 app.use(cookieParser());
 
 const allowedOrigins = [
-    "https://shop-ease-delta-amber.vercel.app",
+  "https://shop-ease-delta-amber.vercel.app",
   "https://shop-ease-main.vercel.app",
+  "http://localhost:5173",
 
 ];
 
-app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) callback(null, true);
-    else callback(new Error("Not allowed by CORS: " + origin));
-  },
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
 
-app.options("*", cors({ origin: allowedOrigins, credentials: true }));
+console.log(`CORS allowed origins: ${allowedOrigins.join(", ")}`);
 
 app.use(express.json({ limit: "1000mb", extended: true }));
 app.use("/images", express.static(path.join(path.resolve(), "images")));
