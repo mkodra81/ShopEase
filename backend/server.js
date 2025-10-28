@@ -8,24 +8,27 @@ import cors from "cors";
 import path from "path";
 import cookieParser from "cookie-parser";
 
-const app = express();
-
 config();
+const app = express();
 const PORT = process.env.PORT;
 
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: "https://shop-ease-delta-amber.vercel.app", // Replace with your frontend's URL
-    credentials: true, 
-  })
-);
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://shop-ease-main.vercel.app",
+  "https://shop-ease-delta-amber.vercel.app"
+];
 
-app.options("*", cors({
-  origin: allowedOrigin,
-  credentials: true,
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) callback(null, true);
+    else callback(new Error("Not allowed by CORS: " + origin));
+  },
+  credentials: true
 }));
+
+app.options("*", cors({ origin: allowedOrigins, credentials: true }));
 
 app.use(express.json({ limit: "1000mb", extended: true }));
 app.use("/images", express.static(path.join(path.resolve(), "images")));
@@ -36,5 +39,5 @@ app.use("/api/orders", orderRouter);
 
 app.listen(PORT, () => {
   connectDb();
-  console.log("Server started at http://localhost:" + PORT);
+  console.log(`Server started at http://localhost:${PORT}`);
 });
