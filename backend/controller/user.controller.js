@@ -57,10 +57,14 @@ const loginUser = async (req, res) => {
         const token = jwt.sign({ id: foundUser._id }, process.env.JWT_SECRET, {
           expiresIn: "1d",
         });
+        // Set cookie options: in production we must use secure + sameSite='none'
+        // so cross-site requests with credentials are allowed. In development
+        // use more relaxed settings.
+        const isProd = process.env.NODE_ENV === "production";
         res.cookie("token", token, {
           httpOnly: true,
-          secure: false,
-          sameSite: "strict",
+          secure: isProd, // secure cookies require HTTPS
+          sameSite: isProd ? "none" : "lax",
         });
         return res.status(200).json({
           message: "Login successful",

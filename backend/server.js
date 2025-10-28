@@ -17,8 +17,8 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Replace with your frontend's URL
-    credentials: true, 
+    origin: FRONTEND_URL,
+    credentials: true,
   })
 );
 
@@ -31,5 +31,4 @@ app.use("/api/orders", orderRouter);
 
 app.listen(PORT, () => {
   connectDb();
-  console.log("Server started at http://localhost:" + PORT);
 });

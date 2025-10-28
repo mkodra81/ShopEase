@@ -18,7 +18,8 @@ const Login = () => {
     setCredentials({ ...credentials, [name]: value });
   };
 
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000"; // Replace with your backend URL
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
