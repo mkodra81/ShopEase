@@ -17,8 +17,6 @@ app.use(cookieParser());
 const allowedOrigins = [
   "https://shop-ease-delta-amber.vercel.app",
   "https://shop-ease-main.vercel.app",
-  "http://localhost:5173",
-
 ];
 
 app.use(
