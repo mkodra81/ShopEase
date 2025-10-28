@@ -17,7 +17,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "https://shop-ease-omega-steel.vercel.app", // Replace with your frontend's URL
+    origin: "https://shop-ease-delta-amber.vercel.app", // Replace with your frontend's URL
     credentials: true, 
   })
 );
