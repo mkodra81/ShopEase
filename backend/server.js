@@ -21,6 +21,11 @@ app.options("*", cors({
   credentials: true
 }));
 
+app.use(cors({
+  origin: allowedOrigin,
+  credentials: true
+}));
+
 app.use(express.json({ limit: "1000mb", extended: true }));
 app.use("/images", express.static(path.join(path.resolve(), "images")));
 
