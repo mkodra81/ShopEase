@@ -11,18 +11,16 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 config();
+const PORT = process.env.PORT;
 
 app.use(cookieParser());
 
-const allowedOrigin = "https://shop-ease-omega-steel.vercel.app";
-
-app.options("*", cors({
-  origin: allowedOrigin,
-}));
-
-app.use(cors({
-  origin: allowedOrigin,
-}));
+app.use(
+  cors({
+    origin: "https://shop-ease-omega-steel.vercel.app", // Replace with your frontend's URL
+    credentials: true, 
+  })
+);
 
 app.use(express.json({ limit: "1000mb", extended: true }));
 app.use("/images", express.static(path.join(path.resolve(), "images")));
@@ -33,4 +31,5 @@ app.use("/api/orders", orderRouter);
 
 app.listen(PORT, () => {
   connectDb();
+  console.log("Server started at http://localhost:" + PORT);
 });
