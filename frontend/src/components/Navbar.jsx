@@ -37,8 +37,8 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto">
             <li className="nav-item">
-              <Link className="nav-link text-white" to="/">
-                Home
+              <Link className="nav-link text-white" to="/about">
+                About
               </Link>
             </li>
             <li className="nav-item">

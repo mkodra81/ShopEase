@@ -21,7 +21,6 @@ const CorrierDashboard = () => {
   const fetchOrders = useOrderStore((state) => state.getOrdersByStatus);
   const fetchOrderById = useOrderStore((state) => state.getOrderById);
 
-  const BACKEND_URL = "http://localhost:5000";
   const FRONTEND_URL = "http://localhost:5173";
 
   const fetchOrdersByStatus = async () => {
@@ -86,7 +85,7 @@ const CorrierDashboard = () => {
           <div>Loading</div>
         </div>
       ) : (
-        <div className="card mx-5 mt-5">
+        <div className="card mx-5 my-5">
           <div className="card-header bg-purple text-white">
             <h5 className="mb-0">Orders</h5>
           </div>

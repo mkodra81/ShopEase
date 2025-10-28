@@ -1,39 +1,41 @@
-import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import ProductCard from '../components/ProductCard';
-import { useProductStore } from '../data/products.js';
-import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import ProductCard from "../components/ProductCard";
+import { useProductStore } from "../data/products.js";
+import { useEffect, useState } from "react";
 
 const Home = () => {
-
   const [loading, setLoading] = useState(true);
 
-  const products = useProductStore(state => state.products);
-  const fetchAllProducts = useProductStore(state => state.fetchAllProducts);
+  const products = useProductStore((state) => state.products);
+  const fetchAllProducts = useProductStore((state) => state.fetchAllProducts);
 
   useEffect(() => {
     const fetchProducts = async () => {
       await fetchAllProducts().then(() => {
-        setLoading(false); 
-      })
+        setLoading(false);
+      });
     };
     fetchProducts();
-  }
-  , []);
+  }, []);
 
-  const featuredProducts = products.filter(product => product.featured).slice(0, 4);
-  
+  const featuredProducts = products
+    .filter((product) => product.featured)
+    .slice(0, 4);
+
   return (
     <div>
       <Navbar />
-      
+
       <div className="bg-purple text-white py-5">
         <div className="container py-5">
           <div className="row align-items-center">
             <div className="col-md-6 mb-4 mb-md-0">
               <h1 className="display-4 fw-bold mb-4">Welcome to ShopEase</h1>
-              <p className="lead mb-4">Discover amazing products at unbeatable prices.</p>
+              <p className="lead mb-4">
+                Discover amazing products at unbeatable prices.
+              </p>
               <Link to="/products" className="btn btn-light btn-lg">
                 Shop Now
               </Link>
@@ -48,7 +50,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Featured Products */}
       <div className="container py-5">
         <div className="d-flex justify-content-between align-items-center mb-4">
@@ -57,15 +59,24 @@ const Home = () => {
             View All
           </Link>
         </div>
-        <div className="row">
-          {featuredProducts.map(product => (
-            <div key={product._id} className="col-md-6 col-lg-3 mb-4">
-              <ProductCard loading={loading} product={product} />
+        {loading ? (
+          <div className="text-center py-5">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading products...</span>
             </div>
-          ))}
-        </div>
+            <p className="mt-3 text-muted">Loading products...</p>
+          </div>
+        ) : (
+          <div className="row">
+            {featuredProducts.map((product) => (
+              <div key={product._id} className="col-md-6 col-lg-3 mb-4">
+                <ProductCard loading={loading} product={product} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-      
+
       {/* Promotional Sections */}
       <div className="bg-light py-5">
         <div className="container">
@@ -106,7 +117,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-      
+
       <Footer />
     </div>
   );

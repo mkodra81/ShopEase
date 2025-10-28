@@ -15,43 +15,6 @@ const Footer = () => {
               &copy; {new Date().getFullYear()} ShopEase. All rights reserved.
             </p>
           </div>
-          <div className="col-md-4 ms-auto mb-4 mb-md-0">
-            <h5 className="mb-3">Shop</h5>
-            <ul className="list-unstyled">
-              <li className="mb-2">
-                <Link
-                  to="/products"
-                  className="text-white text-decoration-none"
-                >
-                  All Products
-                </Link>
-              </li>
-              <li className="mb-2">
-                <Link
-                  to="/products?category=featured"
-                  className="text-white text-decoration-none"
-                >
-                  Featured
-                </Link>
-              </li>
-              <li className="mb-2">
-                <Link
-                  to="/products?category=new"
-                  className="text-white text-decoration-none"
-                >
-                  New Arrivals
-                </Link>
-              </li>
-              <li className="mb-2">
-                <Link
-                  to="/products?category=sale"
-                  className="text-white text-decoration-none"
-                >
-                  Sale
-                </Link>
-              </li>
-            </ul>
-          </div>
           <div className="col-md-4 ms-auto justify-content-end">
             <h5 className="mb-3">Join Our Newsletter</h5>
             <p className="mb-3">
