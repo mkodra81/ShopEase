@@ -30,9 +30,7 @@ const Login = () => {
       const res = await axios.post(
         BACKEND_URL + "/api/users/login",
         credentials,
-        { withCredentials: true }
       );
-      console.log(res.data);
       setUser(res.data);
 
       if (res.status === 200) {

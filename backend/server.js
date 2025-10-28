@@ -18,12 +18,10 @@ const allowedOrigin = "https://shop-ease-omega-steel.vercel.app";
 
 app.options("*", cors({
   origin: allowedOrigin,
-  credentials: true
 }));
 
 app.use(cors({
   origin: allowedOrigin,
-  credentials: true
 }));
 
 app.use(express.json({ limit: "1000mb", extended: true }));
